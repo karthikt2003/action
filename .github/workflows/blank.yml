@@ -1,7 +1,7 @@
-name: Maven Create & Run
+name: Maven Build & Run Hii
 
 on:
-  workflow_dispatch:   # manual trigger
+  workflow_dispatch:   # Trigger manually, or change to "push" if you want auto run on commit
 
 jobs:
   build:
@@ -17,27 +17,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Create or update Java file
-        run: |
-          mkdir -p src/main/java/com/example
-          echo 'package com.example;
-
-          public class Hello {
-              public static void main(String[] args) {
-                  System.out.println("Hello from GitHub Actions with Maven!");
-              }
-          }' > src/main/java/com/example/Hello.java
-
-      - name: Commit and push changes
+      - name: Commit & Push hii.java if changed
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add src/main/java/com/example/Hello.java
-          git commit -m "Add/Update Hello.java" || echo "No changes to commit"
+          git add hii.java
+          git commit -m "Update hii.java from GitHub Actions" || echo "No changes to commit"
           git push
 
-      - name: Run Maven package
+      - name: Build with Maven
         run: mvn clean package
 
-      - name: Run Java class
-        run: java -cp target/classes com.example.Hello
+      - name: Run hii.java
+        run: java -cp target/classes Hii
