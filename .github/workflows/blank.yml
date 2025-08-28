@@ -1,7 +1,7 @@
-name: Python File Create & Run
+name: Maven Create & Run
 
 on:
-  workflow_dispatch:  # Trigger manually
+  workflow_dispatch:   # manual trigger
 
 jobs:
   build:
@@ -11,22 +11,33 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Setup JDK
+        uses: actions/setup-java@v3
         with:
-          python-version: '3.x'
+          distribution: 'temurin'
+          java-version: '17'
 
-      - name: Create or update python file
+      - name: Create or update Java file
         run: |
-          echo 'print("Hello from GitHub Actions!")' > hello.py
+          mkdir -p src/main/java/com/example
+          echo 'package com.example;
+
+          public class Hello {
+              public static void main(String[] args) {
+                  System.out.println("Hello from GitHub Actions with Maven!");
+              }
+          }' > src/main/java/com/example/Hello.java
 
       - name: Commit and push changes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add hello.py
-          git commit -m "Add/Update hello.py" || echo "No changes to commit"
+          git add src/main/java/com/example/Hello.java
+          git commit -m "Add/Update Hello.java" || echo "No changes to commit"
           git push
 
-      - name: Run Python file
-        run: python hello.py
+      - name: Run Maven package
+        run: mvn clean package
+
+      - name: Run Java class
+        run: java -cp target/classes com.example.Hello
